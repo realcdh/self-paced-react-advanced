@@ -42,5 +42,5 @@ export const useBear = create((set) => ({
 
 ## 🔗 참고 문서
 
-- [Zustand 공식문서](https://recoiljs.org/docs/introduction/installation/)
+- [Zustand 공식문서](https://zustand-demo.pmnd.rs/)
 - [Zustand와 React Context](https://tkdodo.eu/blog/zustand-and-react-context)
