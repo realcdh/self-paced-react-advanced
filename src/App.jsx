@@ -1,13 +1,12 @@
 import "./App.css";
 import styled from "styled-components";
-import { useContext } from "react";
-import { RestaurantProvider, RestaurantContext } from "./contexts/RestaurantContext.jsx";
+import { RestaurantProvider } from "./contexts/RestaurantContext.jsx";
+import GlobalStyle from "./styles/GlobalStyle"; // 1단계에서 만든 전역 스타일
 
 import Header from "./Header.jsx";
 import CategoryFilter from "./CategoryFilter.jsx";
 import RestaurantList from "./RestaurantList.jsx";
-import RestaurantDetailModal from "./RestaurantDetailModal.jsx";
-import AddRestaurantModal from "./AddRestaurantModal.jsx";
+import ModalRenderer from "./ModalRenderer.jsx"; // 새로 만든 모달 렌더러
 
 const MainContainer = styled.main`
   display: flex;
@@ -18,29 +17,16 @@ const MainContainer = styled.main`
   min-height: 100vh;
 `;
 
-// 컨텍스트의 상태에 따라 모달을 렌더링하는 내부 컴포넌트
-function AppContent() {
-  const { selectedRestaurant, isAddModalOpen } = useContext(RestaurantContext);
-
-  return (
-    <>
-      <Header /> {/* Props 제거 */}
-      <MainContainer>
-        <CategoryFilter /> {/* Props 제거 */}
-        <RestaurantList /> {/* Props 제거 */}
-      </MainContainer>
-      <aside>
-        {selectedRestaurant && <RestaurantDetailModal />}
-        {isAddModalOpen && <AddRestaurantModal />}
-      </aside>
-    </>
-  );
-}
-
 function App() {
   return (
     <RestaurantProvider>
-      <AppContent />
+      <GlobalStyle />
+      <Header />
+      <MainContainer>
+        <CategoryFilter /> 
+        <RestaurantList />
+      </MainContainer>
+      <ModalRenderer />
     </RestaurantProvider>
   );
 }
