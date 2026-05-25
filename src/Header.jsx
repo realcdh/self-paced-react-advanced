@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { RestaurantContext } from './contexts/RestaurantContext';
 
 // Button 컴포넌트
 const Button = styled.button`
@@ -35,14 +36,15 @@ const Title = styled.h1`
   font-weight: 600;
 `;
 
-// 리액트 컴포넌트 이름은 그대로 Header 유지
-export default function Header({ setIsAddModalOpen }) {
+export default function Header() {
+  const { setIsAddModalOpen } = useContext(RestaurantContext);
+
   const handleClickAddButton = () => {
     setIsAddModalOpen(true);
   };
 
   return (
-    <HeaderContainer> {/* 변경된 이름 사용 */}
+    <HeaderContainer>
       <Title>점심 뭐 먹지</Title>
       <Button
         type="button"
