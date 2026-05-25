@@ -1,12 +1,13 @@
 import "./App.css";
 import styled from "styled-components";
-import { RestaurantProvider } from "./contexts/RestaurantContext.jsx";
-import GlobalStyle from "./styles/GlobalStyle";
+import { useContext } from "react";
+import { RestaurantProvider, RestaurantContext } from "./contexts/RestaurantContext.jsx";
 
 import Header from "./Header.jsx";
 import CategoryFilter from "./CategoryFilter.jsx";
 import RestaurantList from "./RestaurantList.jsx";
-import ModalRenderer from "./ModalRenderer.jsx";
+import RestaurantDetailModal from "./RestaurantDetailModal.jsx";
+import AddRestaurantModal from "./AddRestaurantModal.jsx";
 
 const MainContainer = styled.main`
   display: flex;
@@ -17,16 +18,28 @@ const MainContainer = styled.main`
   min-height: 100vh;
 `;
 
-function App() {
+function AppContent() {
+  const { selectedRestaurant, isAddModalOpen } = useContext(RestaurantContext);
+
   return (
-    <RestaurantProvider>
-      <GlobalStyle />
+    <>
       <Header />
       <MainContainer>
         <CategoryFilter /> 
         <RestaurantList />
       </MainContainer>
-      <ModalRenderer />
+      <aside>
+        {selectedRestaurant && <RestaurantDetailModal />}
+        {isAddModalOpen && <AddRestaurantModal />}
+      </aside>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <RestaurantProvider>
+      <AppContent />
     </RestaurantProvider>
   );
 }
