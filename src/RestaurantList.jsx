@@ -1,5 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useContext } from "react";
+import styled from "styled-components";
+import { RestaurantContext } from "./contexts/RestaurantContext";
 
 const CATEGORY_ICON_MAP = {
   한식: "/category-korean.png",
@@ -10,13 +11,11 @@ const CATEGORY_ICON_MAP = {
   기타: "/category-etc.png",
 };
 
-// 컨테이너 스타일
 const Container = styled.section`
   padding: 0 16px;
   margin: 16px 0;
 `;
 
-// ul 태그를 Styled Component로 정의
 const List = styled.ul`
   display: flex;
   flex-direction: column;
@@ -27,7 +26,7 @@ const Restaurant = styled.li`
   align-items: flex-start;
   padding: 16px 8px;
   border-bottom: 1px solid #e9eaed;
-  cursor: pointer; /* 클릭 가능함을 표시 */
+  cursor: pointer;
 `;
 
 const RestaurantCategory = styled.div`
@@ -73,11 +72,14 @@ const RestaurantDescription = styled.p`
   font-weight: 400;
 `;
 
-export default function RestaurantList({ restaurants, setSelectedRestaurant }) {
+export default function RestaurantList() {
+  const { filteredRestaurants, setSelectedRestaurant } =
+    useContext(RestaurantContext);
+
   return (
     <Container>
       <List>
-        {restaurants.map((restaurant) => (
+        {filteredRestaurants.map((restaurant) => (
           <Restaurant
             key={restaurant.id}
             onClick={() => setSelectedRestaurant(restaurant)}
