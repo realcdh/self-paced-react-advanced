@@ -1,31 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { RestaurantContext } from './contexts/RestaurantContext';
 
-// .restaurant-filter-container 스타일 적용
 const FilterContainer = styled.section`
   display: flex;
   justify-content: space-between;
-
   padding: 0 16px;
   margin-top: 24px;
 `;
 
-// .restaurant-filter-container select 및 .restaurant-filter 스타일 적용
 const FilterSelect = styled.select`
   height: 44px;
   min-width: 125px;
-
   border: 1px solid #d0d5dd;
   border-radius: 8px;
   background: transparent;
-
   font-size: 16px;
-  padding: 8px; /* .restaurant-filter의 패딩 적용 */
+  padding: 8px;
 `;
 
 const CATEGORIES = ["전체", "한식", "중식", "일식", "양식", "아시안", "기타"];
 
-export default function CategoryFilter({ category, setCategory }) {
+export default function CategoryFilter() {
+  const { category, setCategory } = useContext(RestaurantContext);
+
   return (
     <FilterContainer>
       <FilterSelect
