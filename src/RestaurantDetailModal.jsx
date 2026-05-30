@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useRestaurantUI } from "./contexts/RestaurantContext";
+import { useRestaurantStore } from "./stores/useRestaurantStore.js";
 
 const ModalOverlay = styled.div`
   display: block;
@@ -59,7 +59,12 @@ const PrimaryButton = styled.button`
 `;
 
 export default function RestaurantDetailModal() {
-  const { selectedRestaurant, setSelectedRestaurant } = useRestaurantUI();
+  const selectedRestaurant = useRestaurantStore(
+    (state) => state.selectedRestaurant,
+  );
+  const setSelectedRestaurant = useRestaurantStore(
+    (state) => state.setSelectedRestaurant,
+  );
 
   const handleCloseModal = () => {
     setSelectedRestaurant(null);

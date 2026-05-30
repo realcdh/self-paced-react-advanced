@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useRestaurantUI } from "./contexts/RestaurantContext";
+import { useRestaurantStore } from "./stores/useRestaurantStore.js";
 
 // Button 컴포넌트
 const Button = styled.button`
@@ -37,7 +37,9 @@ const Title = styled.h1`
 `;
 
 export default function Header() {
-  const { setIsAddModalOpen } = useRestaurantUI();
+  const setIsAddModalOpen = useRestaurantStore(
+    (state) => state.setIsAddModalOpen,
+  );
 
   const handleClickAddButton = () => {
     setIsAddModalOpen(true);

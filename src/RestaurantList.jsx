@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useRestaurantUI } from "./contexts/RestaurantContext";
+import { useRestaurantStore } from "./stores/useRestaurantStore.js";
 
 const CATEGORY_ICON_MAP = {
   한식: "/category-korean.png",
@@ -73,7 +73,16 @@ const RestaurantDescription = styled.p`
 `;
 
 export default function RestaurantList() {
-  const { filteredRestaurants, setSelectedRestaurant } = useRestaurantUI();
+  const restaurants = useRestaurantStore((state) => state.restaurants);
+  const category = useRestaurantStore((state) => state.category);
+  const setSelectedRestaurant = useRestaurantStore(
+    (state) => state.setSelectedRestaurant,
+  );
+
+  const filteredRestaurants =
+    category === "전체"
+      ? restaurants
+      : restaurants.filter((r) => r.category === category);
 
   return (
     <Container>

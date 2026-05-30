@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import {
-  useRestaurantData,
-  useRestaurantUI,
-} from "./contexts/RestaurantContext";
+import { useRestaurantStore } from "./stores/useRestaurantStore.js";
 
 const ModalWrapper = styled.div`
   display: block;
@@ -114,8 +111,10 @@ const PrimaryButton = styled.button`
 
 export default function AddRestaurantModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { addRestaurant } = useRestaurantData();
-  const { setIsAddModalOpen } = useRestaurantUI();
+  const addRestaurant = useRestaurantStore((state) => state.addRestaurant);
+  const setIsAddModalOpen = useRestaurantStore(
+    (state) => state.setIsAddModalOpen,
+  );
 
   const handleCloseModal = () => {
     setIsAddModalOpen(false);

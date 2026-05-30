@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useRestaurantUI } from "./contexts/RestaurantContext";
+import { useRestaurantStore } from "./stores/useRestaurantStore.js";
 import { CATEGORIES } from "./constants/categories";
 
 const FilterContainer = styled.section`
@@ -21,7 +21,8 @@ const FilterSelect = styled.select`
 `;
 
 export default function CategoryFilter() {
-  const { category, setCategory } = useRestaurantUI();
+  const category = useRestaurantStore((state) => state.category);
+  const setCategory = useRestaurantStore((state) => state.setCategory);
 
   return (
     <FilterContainer>
