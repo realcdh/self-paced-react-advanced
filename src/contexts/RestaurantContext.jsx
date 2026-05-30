@@ -36,6 +36,7 @@ export const RestaurantDataProvider = ({ children }) => {
     const fetchRestaurants = async () => {
       try {
         const response = await fetch(RESTAURANTS_API_URL);
+        if (!response.ok) throw new Error("데이터 불러오기 실패");
         const restaurantData = await response.json();
         setRestaurants(restaurantData);
       } catch (error) {
