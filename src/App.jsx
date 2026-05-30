@@ -1,7 +1,9 @@
 import "./App.css";
 import styled from "styled-components";
-import { useContext } from "react";
-import { RestaurantProvider, RestaurantContext } from "./contexts/RestaurantContext.jsx";
+import {
+  RestaurantProvider,
+  useRestaurantUI,
+} from "./contexts/RestaurantContext.jsx";
 
 import Header from "./Header.jsx";
 import CategoryFilter from "./CategoryFilter.jsx";
@@ -19,13 +21,13 @@ const MainContainer = styled.main`
 `;
 
 function AppContent() {
-  const { selectedRestaurant, isAddModalOpen } = useContext(RestaurantContext);
+  const { selectedRestaurant, isAddModalOpen } = useRestaurantUI();
 
   return (
     <>
       <Header />
       <MainContainer>
-        <CategoryFilter /> 
+        <CategoryFilter />
         <RestaurantList />
       </MainContainer>
       <aside>

@@ -1,22 +1,37 @@
-import { createContext, useState, useEffect, useMemo } from 'react';
-import { initialRestaurants } from '../constants/initialRestaurants.js';
+import { createContext, useState, useEffect, useMemo, useContext } from "react";
+import { initialRestaurants } from "../constants/initialRestaurants.js";
 
-const RESTAURANTS_API_URL = 'http://localhost:3000/restaurants';
+const RESTAURANTS_API_URL = "http://localhost:3000/restaurants";
 
-// Context 생성
-export const RestaurantContext = createContext(null);
+// 1. 데이터 전용 Context
+export const RestaurantDataContext = createContext(null);
+// 2. UI 전용 Context (필터, 모달 등)
+export const RestaurantUIContext = createContext(null);
 
-// Provider 컴포넌트
-export const RestaurantProvider = ({ children }) => {
-  // 1. 음식점 데이터 상태 (기존 useRestaurants hook 로직)
+// 커스텀 훅 - 데이터 사용 시
+export const useRestaurantData = () => {
+  const context = useContext(RestaurantDataContext);
+  if (!context)
+    throw new Error(
+      "useRestaurantData must be used within a RestaurantDataProvider",
+    );
+  return context;
+};
+
+// 커스텀 훅 - UI 상태 사용 시
+export const useRestaurantUI = () => {
+  const context = useContext(RestaurantUIContext);
+  if (!context)
+    throw new Error(
+      "useRestaurantUI must be used within a RestaurantUIProvider",
+    );
+  return context;
+};
+
+// 데이터 Provider
+export const RestaurantDataProvider = ({ children }) => {
   const [restaurants, setRestaurants] = useState(initialRestaurants);
-  
-  // 2. 필터 및 UI 상태 (기존 App.jsx 상태)
-  const [category, setCategory] = useState('전체');
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
 
-  // 초기 데이터 페칭
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
@@ -24,62 +39,83 @@ export const RestaurantProvider = ({ children }) => {
         const restaurantData = await response.json();
         setRestaurants(restaurantData);
       } catch (error) {
-        console.error('음식점 데이터를 불러오는 중 오류가 발생했습니다:', error);
+        console.error(
+          "음식점 데이터를 불러오는 중 오류가 발생했습니다:",
+          error,
+        );
       }
     };
-
     fetchRestaurants();
   }, []);
 
-  // 음식점 추가 로직
   const addRestaurant = async (newRestaurant) => {
     try {
       const response = await fetch(RESTAURANTS_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newRestaurant),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(`[${response.status}] 음식점 추가 실패: ${errorData.message || '알 수 없는 서버 에러'}`);
-      }
-
+      if (!response.ok) throw new Error("추가 실패");
       const createdRestaurant = await response.json();
       setRestaurants((prev) => [...prev, createdRestaurant]);
       return true;
     } catch (error) {
-      console.error('[Error/addRestaurant]:', error.message);
-      alert('음식점 추가에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+      console.error(error);
       return false;
     }
   };
 
-  // 3. 필터링된 음식점 목록 (계산된 상태)
+  const dataValue = useMemo(
+    () => ({ restaurants, addRestaurant }),
+    [restaurants],
+  );
+
+  return (
+    <RestaurantDataContext.Provider value={dataValue}>
+      {children}
+    </RestaurantDataContext.Provider>
+  );
+};
+
+// UI Provider (데이터가 필요하므로 RestaurantDataProvider 하위에서 사용)
+export const RestaurantUIProvider = ({ children }) => {
+  const { restaurants } = useRestaurantData();
+
+  const [category, setCategory] = useState("전체");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+
   const filteredRestaurants = useMemo(() => {
-    return category === '전체'
+    return category === "전체"
       ? restaurants
       : restaurants.filter((r) => r.category === category);
   }, [restaurants, category]);
 
-  // 하위 컴포넌트에 전달할 값들을 하나로 묶기
-  const value = {
-    restaurants,
-    filteredRestaurants,
-    category,
-    setCategory,
-    isAddModalOpen,
-    setIsAddModalOpen,
-    selectedRestaurant,
-    setSelectedRestaurant,
-    addRestaurant,
-  };
+  const uiValue = useMemo(
+    () => ({
+      filteredRestaurants,
+      category,
+      setCategory,
+      isAddModalOpen,
+      setIsAddModalOpen,
+      selectedRestaurant,
+      setSelectedRestaurant,
+    }),
+    [filteredRestaurants, category, isAddModalOpen, selectedRestaurant],
+  );
 
   return (
-    <RestaurantContext.Provider value={value}>
+    <RestaurantUIContext.Provider value={uiValue}>
       {children}
-    </RestaurantContext.Provider>
+    </RestaurantUIContext.Provider>
+  );
+};
+
+// 기존 코드와의 호환성을 위한 통합 Provider
+export const RestaurantProvider = ({ children }) => {
+  return (
+    <RestaurantDataProvider>
+      <RestaurantUIProvider>{children}</RestaurantUIProvider>
+    </RestaurantDataProvider>
   );
 };

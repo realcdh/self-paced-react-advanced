@@ -1,6 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { RestaurantContext } from "./contexts/RestaurantContext";
+import {
+  useRestaurantData,
+  useRestaurantUI,
+} from "./contexts/RestaurantContext";
 
 const ModalWrapper = styled.div`
   display: block;
@@ -111,7 +114,8 @@ const PrimaryButton = styled.button`
 
 export default function AddRestaurantModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { addRestaurant, setIsAddModalOpen } = useContext(RestaurantContext);
+  const { addRestaurant } = useRestaurantData();
+  const { setIsAddModalOpen } = useRestaurantUI();
 
   const handleCloseModal = () => {
     setIsAddModalOpen(false);
@@ -151,7 +155,9 @@ export default function AddRestaurantModal() {
         <Title>새로운 음식점</Title>
         <form onSubmit={handleAddRestaurant}>
           <FormItem>
-            <Label htmlFor="category" $required>카테고리</Label>
+            <Label htmlFor="category" $required>
+              카테고리
+            </Label>
             <Select name="category" id="category" required>
               <option value="">선택해 주세요</option>
               <option value="한식">한식</option>
@@ -164,13 +170,20 @@ export default function AddRestaurantModal() {
           </FormItem>
 
           <FormItem>
-            <Label htmlFor="name" $required>이름</Label>
+            <Label htmlFor="name" $required>
+              이름
+            </Label>
             <Input type="text" name="name" id="name" required />
           </FormItem>
 
           <FormItem>
             <Label htmlFor="description">설명</Label>
-            <Textarea name="description" id="description" cols="30" rows="5"></Textarea>
+            <Textarea
+              name="description"
+              id="description"
+              cols="30"
+              rows="5"
+            ></Textarea>
             <HelpText>메뉴 등 추가 정보를 입력해 주세요.</HelpText>
           </FormItem>
 

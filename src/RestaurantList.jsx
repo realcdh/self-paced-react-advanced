@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components";
-import { RestaurantContext } from "./contexts/RestaurantContext";
+import { useRestaurantUI } from "./contexts/RestaurantContext";
 
 const CATEGORY_ICON_MAP = {
   한식: "/category-korean.png",
@@ -73,8 +73,7 @@ const RestaurantDescription = styled.p`
 `;
 
 export default function RestaurantList() {
-  const { filteredRestaurants, setSelectedRestaurant } =
-    useContext(RestaurantContext);
+  const { filteredRestaurants, setSelectedRestaurant } = useRestaurantUI();
 
   return (
     <Container>
