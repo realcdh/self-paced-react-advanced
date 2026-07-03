@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import "./App.css";
 import styled from "styled-components";
 import { useRestaurantStore } from "./stores/useRestaurantStore.js";
@@ -22,13 +21,6 @@ function App() {
     (state) => state.selectedRestaurant,
   );
   const isAddModalOpen = useRestaurantStore((state) => state.isAddModalOpen);
-  const fetchRestaurants = useRestaurantStore(
-    (state) => state.fetchRestaurants,
-  );
-
-  useEffect(() => {
-    fetchRestaurants();
-  }, [fetchRestaurants]);
 
   return (
     <>

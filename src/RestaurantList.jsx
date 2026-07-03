@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useRestaurantStore } from "./stores/useRestaurantStore.js";
+import { useQuery } from "@tanstack/react-query";
+import { fetchRestaurants } from "./api/restaurants.js";
 
 const CATEGORY_ICON_MAP = {
   한식: "/category-korean.png",
@@ -93,12 +95,17 @@ const RetryButton = styled.button`
 `;
 
 export default function RestaurantList() {
-  const restaurants = useRestaurantStore((state) => state.restaurants);
+  const {
+    data: restaurants = [], // 아직은 빈 배열이라는 뜻
+    isPending, // 아직 데이터가 없는 로딩 상태
+    isError,
+    refetch, // 다시 요청하는 함수
+  } = useQuery({
+    queryKey: ["restaurants"],
+    queryFn: fetchRestaurants,
+  });
+
   const category = useRestaurantStore((state) => state.category);
-  const error = useRestaurantStore((state) => state.error);
-  const fetchRestaurants = useRestaurantStore(
-    (state) => state.fetchRestaurants,
-  );
   const setSelectedRestaurant = useRestaurantStore(
     (state) => state.setSelectedRestaurant,
   );
@@ -108,44 +115,26 @@ export default function RestaurantList() {
       ? restaurants
       : restaurants.filter((r) => r.category === category);
 
-  if (error) {
+  if (isPending) {
     return (
       <Container>
         <ErrorState>
-          <p>{error}</p>
-          <RetryButton type="button" onClick={fetchRestaurants}>
+          <p>불러오는 중...</p>
+        </ErrorState>
+      </Container>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Container>
+        <ErrorState>
+          <p>음식점 목록을 불러오지 못했어요. 잠시 후 다시 시도해주세요.</p>
+          <RetryButton type="button" onClick={() => refetch()}>
             다시 시도
           </RetryButton>
         </ErrorState>
       </Container>
     );
   }
-
-  return (
-    <Container>
-      <List>
-        {filteredRestaurants.map((restaurant) => (
-          <Restaurant
-            key={restaurant.id}
-            onClick={() => setSelectedRestaurant(restaurant)}
-            role="button"
-            tabIndex={0}
-          >
-            <RestaurantCategory>
-              <CategoryIcon
-                src={CATEGORY_ICON_MAP[restaurant.category]}
-                alt={restaurant.category}
-              />
-            </RestaurantCategory>
-            <RestaurantInfo>
-              <RestaurantName>{restaurant.name}</RestaurantName>
-              <RestaurantDescription>
-                {restaurant.description}
-              </RestaurantDescription>
-            </RestaurantInfo>
-          </Restaurant>
-        ))}
-      </List>
-    </Container>
-  );
 }
