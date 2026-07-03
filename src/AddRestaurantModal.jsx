@@ -1,6 +1,5 @@
-import { useState } from "react";
-import styled from "styled-components";
-import { useRestaurantStore } from "./stores/useRestaurantStore.js";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { postRestaurant } from "./api/restaurants.js";
 
 const ModalWrapper = styled.div`
   display: block;
@@ -110,42 +109,35 @@ const PrimaryButton = styled.button`
 `;
 
 export default function AddRestaurantModal() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const addRestaurant = useRestaurantStore((state) => state.addRestaurant);
+  const queryClient = useQueryClient();
   const setIsAddModalOpen = useRestaurantStore(
     (state) => state.setIsAddModalOpen,
   );
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: postRestaurant,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["restaurants"] });
+      setIsAddModalOpen(false);
+    },
+  });
 
   const handleCloseModal = () => {
     setIsAddModalOpen(false);
   };
 
-  const handleAddRestaurant = async (e) => {
+  const handleAddRestaurant = (e) => {
     e.preventDefault();
     const form = e.target;
-    const category = form.category.value;
-    const name = form.name.value;
-    const description = form.description.value;
-
     const newRestaurant = {
       id: crypto.randomUUID(),
-      category,
-      name,
-      description,
+      category: form.category.value,
+      name: form.name.value,
+      description: form.description.value,
     };
-
-    setIsSubmitting(true);
-
-    try {
-      const isAdded = await addRestaurant(newRestaurant);
-      if (isAdded) {
-        form.reset();
-        handleCloseModal();
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+    mutate(newRestaurant);
   };
+
 
   return (
     <ModalWrapper>
@@ -187,12 +179,13 @@ export default function AddRestaurantModal() {
           </FormItem>
 
           <ButtonContainer>
-            <PrimaryButton type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "추가 중..." : "추가하기"}
+            <PrimaryButton type="submit" disabled={isPending}>
+              {isPending ? "추가 중..." : "추가하기"}
             </PrimaryButton>
           </ButtonContainer>
         </form>
       </Container>
     </ModalWrapper>
   );
+
 }

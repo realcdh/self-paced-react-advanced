@@ -8,6 +8,8 @@ import RestaurantList from "./RestaurantList.jsx";
 import RestaurantDetailModal from "./RestaurantDetailModal.jsx";
 import AddRestaurantModal from "./AddRestaurantModal.jsx";
 
+
+
 const MainContainer = styled.main`
   display: flex;
   flex-direction: column;
