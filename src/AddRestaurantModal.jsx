@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postRestaurant } from "./api/restaurants.js";
+import styled from "styled-components";
+import { useRestaurantStore } from "./stores/useRestaurantStore.js";
 
 const ModalWrapper = styled.div`
   display: block;
