@@ -137,4 +137,32 @@ export default function RestaurantList() {
       </Container>
     );
   }
+
+  return (
+    <Container>
+      <List>
+        {filteredRestaurants.map((restaurant) => (
+          <Restaurant
+            key={restaurant.id}
+            onClick={() => setSelectedRestaurant(restaurant)}
+            role="button"
+            tabIndex={0}
+          >
+            <RestaurantCategory>
+              <CategoryIcon
+                src={CATEGORY_ICON_MAP[restaurant.category]}
+                alt={restaurant.category}
+              />
+            </RestaurantCategory>
+            <RestaurantInfo>
+              <RestaurantName>{restaurant.name}</RestaurantName>
+              <RestaurantDescription>
+                {restaurant.description}
+              </RestaurantDescription>
+            </RestaurantInfo>
+          </Restaurant>
+        ))}
+      </List>
+    </Container>
+  );
 }
