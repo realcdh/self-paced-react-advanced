@@ -99,6 +99,7 @@ export default function RestaurantList() {
     data: restaurants = [], // 아직은 빈 배열이라는 뜻
     isPending, // 아직 데이터가 없는 로딩 상태
     isError,
+    error, // fetchRestaurants가 던진 에러 객체
     refetch, // 다시 요청하는 함수
   } = useQuery({
     queryKey: ["restaurants"],
@@ -129,7 +130,7 @@ export default function RestaurantList() {
     return (
       <Container>
         <ErrorState>
-          <p>음식점 목록을 불러오지 못했어요. 잠시 후 다시 시도해주세요.</p>
+          <p>{error.message}</p>
           <RetryButton type="button" onClick={() => refetch()}>
             다시 시도
           </RetryButton>
