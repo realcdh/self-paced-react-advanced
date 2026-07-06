@@ -41,12 +41,6 @@
       "category": "한식",
       "name": "한식테스트",
       "description": "한식테스트설명"
-    },
-    {
-      "id": "jCIDcNhQGGw",
-      "category": "한식",
-      "name": "DevTool 테스트 한식",
-      "description": "260703 DevTool 테스트"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
